@@ -1,26 +1,31 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useSortable } from "@dnd-kit/sortable";
-import { handlerDelete } from "../functions";
+import { createTask, handlerDelete, handlerUpdateColumn } from "../functions";
 import { Column } from "../types/column";
 import { BsTrash3Fill } from "react-icons/bs";
 import { CSS } from "@dnd-kit/utilities";
+import React from "react";
+import { AiOutlinePlus } from "react-icons/ai";
 
 
 type Props = {
   column: Column
   columns: Column[]
   setColumns: (columns: Column[]) => void
+  //deleteColumn: (id: number | string) => void
+  //updateColumn: (id: number | string, title: string) => void
 }
 
 const ColumnContainer = ({ column, setColumns, columns }: Props) => {
-
+  const [editMode, setEditMode] = React.useState<boolean>(false)
   const sort = useSortable({
     id: column.id,
     data: {
       type: column,
       column
-    }
+    },
+    disabled: editMode // ? We can't drag the column when we are editing the title
   })
 
   const style = {
@@ -45,10 +50,21 @@ const ColumnContainer = ({ column, setColumns, columns }: Props) => {
         // ? We only can drag the column by the <div> title
         {...sort.attributes}
         {...sort.listeners}
+        onClick={() => setEditMode(true)}
         className="bg-mainBackground text-md h-[60px] cursor-grab rounded-md round-b-none p-3 font-bold border-4 border-columnBackground flex items-center justify-between">
         <div className="flex gap-2 ">
-          <span className="flex items-center justify-center px-2 py-1 text-sm rounded-full text-rose-700 bg-columnBackground">0</span>
-          <h3 className="mt-1">{column.title}</h3>
+          <span className="flex items-center justify-center px-2 py-1 text-sm rounded-full text-rose-700 bg-columnBackground">{columns.findIndex((col: Column) => col.id === column.id)}</span>
+          <h3 className="mt-1">
+            {editMode
+              ? <input value={column.title} onChange={(e) => handlerUpdateColumn(columns, column.id, e.target.value, setColumns)} autoFocus onBlur={() => setEditMode(false)} onKeyDown={(e) => {
+                if (e.key !== 'Enter') return
+                setEditMode(false)
+              }}
+                className="px-2 bg-black border rounded outline-none focus:border-rose-400"
+              />
+              : column.title
+            }
+          </h3>
         </div>
         <div className="flex">
           <button
@@ -62,7 +78,13 @@ const ColumnContainer = ({ column, setColumns, columns }: Props) => {
       {/* Column task container */}
       <div className="flex flex-grow">Content</div>
       {/* Column footer */}
-      <div>Footer</div>
+      <button
+        onClick={() => { createTask(column.id) }}
+        className="flex items-center gap-2 p-4 border-2 rounded-md border-columnBackground border-x-columnBackground hover:bg-mainBackground hover:text-rose-500 active:bg-black"
+      >
+        <AiOutlinePlus className="inline-block ml-2" />
+        <span >Add Task</span>
+      </button>
     </div>
   )
 }

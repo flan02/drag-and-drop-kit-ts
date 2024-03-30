@@ -1,15 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import { Column } from "../types/column";
+import { Column, ColumnParams } from "../types/column";
 //import { arrayMove } from "@dnd-kit/sortable";
-
-interface ColumnParams {
-  columns: Column[]
-  setColumns: (columns: Column[]) => void
-
-}
-
-
 
 
 
@@ -34,9 +26,9 @@ export const handlerDelete = (columns: Column[], setColumns: (columns: Column[])
   setColumns(filteredColumns)
 }
 
-export const handlerOnDragStart = (activeColumn: Column | null, setActiveColumn: (activeColumn: Column) => void, e: DragStartEvent) => {
-  //console.log('drag start', e);
-  if (e.active.data.current?.type === 'Column') {
+export const handlerOnDragStart = (setActiveColumn: (activeColumn: Column) => void, e: DragStartEvent) => {
+  //console.log(e)
+  if (e.active.data.current?.type === 'Column') { // * Warning, maybe there is a bug here or error
     setActiveColumn(e.active.data.current.column)
     return
   }
@@ -58,4 +50,20 @@ export const handlerOnDragEnd = (e: DragEndEvent, columns: Column[], setColumns:
     return newColumns
   })());
 
+}
+
+export const handlerUpdateColumn = (columns: Column[], columnId: number | string, eventValue: string, setColumns: (columns: Column[]) => void) => {
+  //console.log(columnId, eventValue);
+  const newColumns = columns.map((column) => {
+    if (column.id !== columnId) return column
+    return {
+      ...column,
+      title: eventValue
+    }
+  })
+  setColumns(newColumns)
+}
+
+export const createTask = (id: number | string) => {
+  console.log('creating task in column with id: ', id);
 }

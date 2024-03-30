@@ -5,3 +5,15 @@
 html, body, #root {
   @apply box-border text-white bg-black;
 }
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar:horizontal {
+  width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-rose-400 rounded-xl;
+}
