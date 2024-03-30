@@ -14,7 +14,7 @@ type Props = {}
 
 
 
-const DragAndDrop = (_props: Props) => {
+const DragAndDropUI = (_props: Props) => {
   const initialState: Person[] = people
   const [listPeople, setListPeople] = React.useState<Person[]>(initialState)
 
@@ -99,4 +99,4 @@ const DragAndDrop = (_props: Props) => {
   )
 }
 
-export default DragAndDrop
+export default DragAndDropUI

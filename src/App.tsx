@@ -1,7 +1,9 @@
 
 
 import './App.css'
-import DragAndDrop from './components/ui/DragAndDrop'
+//import DragAndDropUI from './components/ui/DragAndDropUI'
+import KanbanBoardUI from './components/ui/KanbanBoardUI'
+
 
 
 function App() {
@@ -9,9 +11,10 @@ function App() {
 
   return (
     <>
-      <h1 className='border bg-teal-800 text-blue-200'>REACT: DRAG AND DROP <a href='https://docs.dndkit.com/' target='_blank' className='underline pl-8 text-pink-200'>dnd docs</a></h1>
+      <h1 className='text-blue-200 bg-teal-800 border'>REACT: DRAG AND DROP <a href='https://docs.dndkit.com/' target='_blank' className='pl-8 text-pink-200 underline'>dnd docs</a></h1>
       <br /><br />
-      <DragAndDrop />
+      {/*<DragAndDropUI />*/}
+      <KanbanBoardUI />
     </>
   )
 }
