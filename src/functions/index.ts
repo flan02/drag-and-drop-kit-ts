@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import { Column, ColumnParams } from "../types/column";
+import { Column, ColumnParams, Task } from "../types/column";
 //import { arrayMove } from "@dnd-kit/sortable";
 
 
@@ -64,6 +64,40 @@ export const handlerUpdateColumn = (columns: Column[], columnId: number | string
   setColumns(newColumns)
 }
 
-export const createTask = (id: number | string) => {
-  console.log('creating task in column with id: ', id);
+export const createTask = (id: number | string, tasks: Task[], setTasks: (tasks: Task[]) => void) => {
+  //console.log('creating task in column with id: ', id);
+  const tasksLength = tasks.filter((task) => task.columnId === id).length
+  const newTask: Task = {
+    id: generateId(),
+    columnId: id,
+    content: `This is the new Task number ${tasksLength + 1} for id: ${id}`
+  }
+  //console.log(newTask)
+  setTasks([...tasks, newTask])
+  return 0
+}
+
+export const handlerTaskDelete = (id: number | string, tasks: Task[], setTasks: (tasks: Task[]) => void) => {
+  //console.log('delete task button clicked', id);
+  const filteredTasks = tasks.filter((task) => task.id !== id)
+  setTasks(filteredTasks)
+}
+
+export const toggleEditMode = (editMode: boolean, setEditMode: (editMode: boolean) => void, setMouseIsOver: (editMode: boolean) => void) => {
+  //setEditMode((prev) => !prev)
+  setEditMode(!editMode)
+  setMouseIsOver(false)
+}
+
+export const handlerUpdateTask = (tasks: Task[], id: number | string, eventValue: string, setTasks: (tasks: Task[]) => void) => {
+  //console.log(taskId, eventValue);
+  const newTasks = tasks.map((task) => {
+    if (task.id !== id) return task
+
+    return {
+      ...task,
+      content: eventValue
+    }
+  })
+  setTasks(newTasks)
 }

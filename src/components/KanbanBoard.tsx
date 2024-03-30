@@ -45,7 +45,7 @@ const KanbanBoard = (_props: Props) => {
                 <SortableContext items={columnsId}>
                   {
                     columns.map((column) => (
-                      <ColumnContainer column={column} key={column.id} setColumns={setColumns} columns={columns} />
+                      <ColumnContainer column={column} key={column.id} setColumns={setColumns} columns={columns} tasks={tasks} setTasks={setTasks} />
                     ))
                   }
                 </SortableContext>
@@ -63,7 +63,7 @@ const KanbanBoard = (_props: Props) => {
         <DragOverlay>
           {
             createPortal(
-              activeColumn ? <ColumnContainer key={activeColumn.id} column={activeColumn} setColumns={setColumns} columns={columns} /> : null,
+              activeColumn ? <ColumnContainer key={activeColumn.id} column={activeColumn} setColumns={setColumns} columns={columns} tasks={tasks} setTasks={setTasks} /> : null,
               document.body
             )
           }

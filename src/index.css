@@ -17,3 +17,8 @@ html, body, #root {
 ::-webkit-scrollbar-thumb {
   @apply bg-rose-400 rounded-xl;
 }
+
+button {
+  margin: 0;
+  padding: 0;
+}

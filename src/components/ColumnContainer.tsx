@@ -2,22 +2,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useSortable } from "@dnd-kit/sortable";
 import { createTask, handlerDelete, handlerUpdateColumn } from "../functions";
-import { Column } from "../types/column";
+import { Column, Task } from "../types/column";
 import { BsTrash3Fill } from "react-icons/bs";
 import { CSS } from "@dnd-kit/utilities";
 import React from "react";
 import { AiOutlinePlus } from "react-icons/ai";
+import TaskCard from "./TaskCard";
 
 
 type Props = {
   column: Column
   columns: Column[]
+  tasks: Task[]
   setColumns: (columns: Column[]) => void
+  setTasks: (tasks: Task[]) => void
   //deleteColumn: (id: number | string) => void
   //updateColumn: (id: number | string, title: string) => void
 }
 
-const ColumnContainer = ({ column, setColumns, columns }: Props) => {
+const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props) => {
   const [editMode, setEditMode] = React.useState<boolean>(false)
   const sort = useSortable({
     id: column.id,
@@ -76,10 +79,19 @@ const ColumnContainer = ({ column, setColumns, columns }: Props) => {
         </div>
       </div>
       {/* Column task container */}
-      <div className="flex flex-grow">Content</div>
+      <div className="flex flex-grow overflow-x-hidden overflow-y-auto">
+        <section>
+          {
+            tasks.filter((task) => task.columnId === column.id).map((task) => (
+              <TaskCard task={task} tasks={tasks} key={task.id} setTasks={setTasks} />
+            ))
+          }
+        </section>
+
+      </div>
       {/* Column footer */}
       <button
-        onClick={() => { createTask(column.id) }}
+        onClick={() => createTask(column.id, tasks, setTasks)}
         className="flex items-center gap-2 p-4 border-2 rounded-md border-columnBackground border-x-columnBackground hover:bg-mainBackground hover:text-rose-500 active:bg-black"
       >
         <AiOutlinePlus className="inline-block ml-2" />
