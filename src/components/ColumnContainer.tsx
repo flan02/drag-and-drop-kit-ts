@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useSortable } from "@dnd-kit/sortable";
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { createTask, handlerDelete, handlerUpdateColumn } from "../functions";
 import { Column, Task } from "../types/column";
 import { BsTrash3Fill } from "react-icons/bs";
@@ -16,16 +16,16 @@ type Props = {
   tasks: Task[]
   setColumns: (columns: Column[]) => void
   setTasks: (tasks: Task[]) => void
-  //deleteColumn: (id: number | string) => void
-  //updateColumn: (id: number | string, title: string) => void
+
 }
 
 const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props) => {
   const [editMode, setEditMode] = React.useState<boolean>(false)
+  const tasksId = React.useMemo(() => tasks.map((task) => task.id), [tasks])
   const sort = useSortable({
     id: column.id,
     data: {
-      type: column,
+      type: "Column",
       column
     },
     disabled: editMode // ? We can't drag the column when we are editing the title
@@ -36,11 +36,11 @@ const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props
     transform: CSS.Transform.toString(sort.transform),
   }
 
-  /*
+
   if (sort.isDragging) {
-    return <div ref={sort.setNodeRef} style={style} className="border-2 border-rose-400 opacity-40 bg-columnBackground w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"></div>
+    return <div ref={sort.setNodeRef} style={style} className="opacity-40 bg-columnBackground w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"></div>
   }
-*/
+
 
   return (
     <div
@@ -71,7 +71,7 @@ const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props
         </div>
         <div className="flex">
           <button
-            onClick={() => handlerDelete(columns, setColumns, column.id)}
+            onClick={() => handlerDelete(columns, setColumns, column.id, setTasks, tasks)}
             type="button" className="z-10 mt-1">
             <BsTrash3Fill className="align-bottom text-emerald-500 hover:text-emerald-300" />
           </button>
@@ -80,13 +80,15 @@ const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props
       </div>
       {/* Column task container */}
       <div className="flex flex-grow overflow-x-hidden overflow-y-auto">
-        <section>
-          {
-            tasks.filter((task) => task.columnId === column.id).map((task) => (
-              <TaskCard task={task} tasks={tasks} key={task.id} setTasks={setTasks} />
-            ))
-          }
-        </section>
+        <SortableContext items={tasksId}>
+          <section>
+            {
+              tasks.filter((task) => task.columnId === column.id).map((task) => (
+                <TaskCard task={task} tasks={tasks} key={task.id} setTasks={setTasks} />
+              ))
+            }
+          </section>
+        </SortableContext>
 
       </div>
       {/* Column footer */}

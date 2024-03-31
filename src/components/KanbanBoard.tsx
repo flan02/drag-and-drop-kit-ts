@@ -2,13 +2,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { AiOutlinePlus } from "react-icons/ai";
-import { createColumn, handlerOnDragEnd, handlerOnDragStart } from "../functions"; // Ensure createColumn accepts two arguments
+import { createColumn, handlerOnDragEnd, handlerOnDragOver, handlerOnDragStart } from "../functions"; // Ensure createColumn accepts two arguments
 import React from "react";
 import { Column, Task } from "../types/column";
 import ColumnContainer from "./ColumnContainer";
-import { DndContext, DragCancelEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, DragCancelEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
+import TaskCard from "./TaskCard";
 
 type Props = {}
 
@@ -18,9 +19,9 @@ const KanbanBoard = (_props: Props) => {
   const [columns, setColumns] = React.useState<Column[]>([])
   // $ columns.map((column) => column.id) is an array of only column ids. With useMemo it will only recalculate the value when the dependencies change either by adding or deleting a column.
   const columnsId = React.useMemo(() => columns.map((column) => column.id), [columns]) // ? Calculate the columnsId every time [columns] changes: By using useMemo, we can avoid recalculating columnsId every time the component re-renders. This is because useMemo will only recalculate the value when the dependencies change.
-  //console.log(columns); //console.log(columnsId);
   const [tasks, setTasks] = React.useState<Task[]>([])
   const [activeColumn, setActiveColumn] = React.useState<Column | null>(null)
+  const [activeTask, setActiveTask] = React.useState<Task | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, {
     activationConstraint: {
       distance: 50, // 50px // ? The distance the pointer must travel before the drag sequence begins.
@@ -33,9 +34,10 @@ const KanbanBoard = (_props: Props) => {
       <DndContext
         onDragStart={(e: DragStartEvent) => {
           const event = e
-          handlerOnDragStart(setActiveColumn, event)
+          handlerOnDragStart(setActiveColumn, event, setActiveTask)
         }}
-        onDragEnd={(e: DragCancelEvent) => handlerOnDragEnd(e, columns, setColumns)}
+        onDragEnd={(e: DragCancelEvent) => handlerOnDragEnd(e, columns, setColumns, setActiveColumn, setActiveTask)}
+        onDragOver={(e: DragOverEvent) => handlerOnDragOver(e, tasks, setTasks)}
         sensors={sensors}
       >
         <div className="flex flex-col gap-4 m-auto">
@@ -60,17 +62,23 @@ const KanbanBoard = (_props: Props) => {
             <AiOutlinePlus className="inline-block mb-1 ml-2" />
           </button>
         </div>
-        <DragOverlay>
-          {
-            createPortal(
-              activeColumn ? <ColumnContainer key={activeColumn.id} column={activeColumn} setColumns={setColumns} columns={columns} tasks={tasks} setTasks={setTasks} /> : null,
-              document.body
-            )
-          }
-        </DragOverlay>
+        {createPortal(
+          <DragOverlay>
+            {activeColumn && (
+              <ColumnContainer
+                key={activeColumn.id} column={activeColumn} setColumns={setColumns} columns={columns} tasks={tasks} setTasks={setTasks}
+              />
+            )}
+            {activeTask && (
+              <TaskCard task={activeTask} setActiveTask={setActiveTask} tasks={tasks} setTasks={setTasks} />
+            )}
+          </DragOverlay>,
+          document.body
+        )}
       </DndContext>
     </div>
   )
 }
 
 export default KanbanBoard
+
