@@ -36,8 +36,8 @@ const TaskCard = ({ task, tasks, setTasks }: Props) => {
   }
 
   if (sort.isDragging) {
-    return <div ref={sort.setNodeRef} style={style} className="opacity-50 task relative cursor-grab w-[350px] bg-mainBackground mt-1 p-2 h-[100px] min-h-[100px] items-center flex text-left hover:ring-2 hover:ring-inset hover:ring-rose-500">
-      {task.content}
+    return <div ref={sort.setNodeRef} style={style} className="opacity-50 task relative cursor-grab w-[348px] bg-rose-50 mt-1 p-2 h-[100px] min-h-[100px] items-center flex text-left hover:ring-2 hover:ring-inset hover:ring-rose-500">
+
     </div>
   }
 
@@ -60,16 +60,20 @@ const TaskCard = ({ task, tasks, setTasks }: Props) => {
               return
             }}
             key={task.id}
-            className="task relative cursor-grab w-[350px] bg-mainBackground mt-1 p-2 h-[100px] min-h-[100px] items-center flex text-left hover:ring-2 hover:ring-inset hover:ring-rose-500">
+            className="task relative cursor-grab ml-1 text-left w-[340px] bg-purple-200 border border-slate-400  mt-1 p-2 h-[100px] min-h-[100px] items-center flex hover:ring-2 hover:ring-inset hover:ring-slate-400 text-rose-700">
             <p className="w-[305px] my-auto h-[90%] overflow-x-hidden overflow-y-auto whitespace-pre-wrap">
-              {task.content}
+              {task.content} <br />
+              {
+                task.updatedAt ? <span className="text-xs text-rose-500">Updated at: {task.date}</span> : <span className="text-xs text-rose-500">Created at: {task.date}</span>
+              }
             </p>
+
             {
               mouseIsOver
                 ? <button
                   onClick={() => handlerTaskDelete(task.id, tasks, setTasks)}
-                  className="absolute -translate-y-1/2 stroke-white right-4 top-1/2 bg-columnBackground">
-                  <BsFillTrash3Fill className="text-sky-100 hover:text-sky-300" />
+                  className="absolute -translate-y-1/2 stroke-white right-4 top-1/2">
+                  <BsFillTrash3Fill className="text-rose-500 hover:text-rose-700" />
                 </button>
                 : null
             }

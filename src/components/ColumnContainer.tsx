@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
-import { createTask, handlerDelete, handlerUpdateColumn } from "../functions";
+import { createTask, handlerColumnDelete, handlerUpdateColumn } from "../functions";
 import { Column, Task } from "../types/column";
 import { BsTrash3Fill } from "react-icons/bs";
 import { CSS } from "@dnd-kit/utilities";
@@ -38,7 +38,7 @@ const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props
 
 
   if (sort.isDragging) {
-    return <div ref={sort.setNodeRef} style={style} className="opacity-40 bg-columnBackground w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"></div>
+    return <div ref={sort.setNodeRef} style={style} className="opacity-40 bg-rose-50 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col"></div>
   }
 
 
@@ -47,23 +47,23 @@ const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props
       // ? The dnd-kit library can handle our <div>
       ref={sort.setNodeRef} // * The ref prop is used to attach a ref to the element. This is used to access the DOM element in React. The ref prop is a function that takes the reference to the element as an argument.
       style={style}
-      className="bg-columnBackground w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col">
+      className="bg-rose-200 w-[350px] h-[500px] max-h-[500px] rounded-md flex flex-col border">
       {/* Column title */}
       <div
         // ? We only can drag the column by the <div> title
         {...sort.attributes}
         {...sort.listeners}
         onClick={() => setEditMode(true)}
-        className="bg-mainBackground text-md h-[60px] cursor-grab rounded-md round-b-none p-3 font-bold border-4 border-columnBackground flex items-center justify-between">
+        className="bg-rose-300 text-md h-[60px] cursor-grab rounded-md round-b-none p-3 font-bold border-2 border-rose-400 flex items-center justify-between">
         <div className="flex gap-2 ">
-          <span className="flex items-center justify-center px-2 py-1 text-sm rounded-full text-rose-700 bg-columnBackground">{columns.findIndex((col: Column) => col.id === column.id)}</span>
+          <span className="flex items-center justify-center px-2 py-1 text-sm rounded-full text-rose-50 bg-rose-500">{columns.findIndex((col: Column) => col.id === column.id)}</span>
           <h3 className="mt-1">
             {editMode
               ? <input value={column.title} onChange={(e) => handlerUpdateColumn(columns, column.id, e.target.value, setColumns)} autoFocus onBlur={() => setEditMode(false)} onKeyDown={(e) => {
                 if (e.key !== 'Enter') return
                 setEditMode(false)
               }}
-                className="px-2 bg-black border rounded outline-none focus:border-rose-400"
+                className="px-2 border rounded outline-none bg-rose-200 focus:border-rose-400"
               />
               : column.title
             }
@@ -71,9 +71,9 @@ const ColumnContainer = ({ column, setColumns, columns, tasks, setTasks }: Props
         </div>
         <div className="flex">
           <button
-            onClick={() => handlerDelete(columns, setColumns, column.id, setTasks, tasks)}
+            onClick={() => handlerColumnDelete(columns, setColumns, column.id, setTasks, tasks)}
             type="button" className="z-10 mt-1">
-            <BsTrash3Fill className="align-bottom text-emerald-500 hover:text-emerald-300" />
+            <BsTrash3Fill className="text-purple-500 align-bottom hover:text-purple-700" />
           </button>
 
         </div>

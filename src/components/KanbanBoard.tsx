@@ -52,26 +52,24 @@ const KanbanBoard = (_props: Props) => {
                   }
                 </SortableContext>
               </section>
-              : <p className="text-2xl font-bold text-center text-rose-700">No columns yet</p>
+              : <p className="text-4xl font-bold text-center text-rose-700">No employees added yet</p>
           }
 
           <button
             onClick={() => createColumn({ columns, setColumns })} // Ensure createColumn accepts two arguments
-            className="h-[60px] w-[350px] min-w-[350px] cursor-pointer rounded-lg bg-mainBackground border-2 border-columnBackground hover:bg-slate-800 hover:text-rose-700 p-4 ring-rose-500 hover:ring-2">
-            <span>Add Column</span>
+            className="h-[60px] w-[350px] min-w-[350px] cursor-pointer rounded-lg bg-mainBackground border-2 border-columnBackground hover:bg-slate-800 text-rose-50 hover:text-rose-700 p-4 ring-rose-500 hover:ring-2">
+            <span>Add Employee</span>
             <AiOutlinePlus className="inline-block mb-1 ml-2" />
           </button>
         </div>
         {createPortal(
           <DragOverlay>
-            {activeColumn && (
-              <ColumnContainer
-                key={activeColumn.id} column={activeColumn} setColumns={setColumns} columns={columns} tasks={tasks} setTasks={setTasks}
-              />
-            )}
-            {activeTask && (
-              <TaskCard task={activeTask} setActiveTask={setActiveTask} tasks={tasks} setTasks={setTasks} />
-            )}
+            {activeColumn ? (
+              <ColumnContainer key={activeColumn.id} column={activeColumn} setColumns={setColumns} columns={columns} tasks={tasks} setTasks={setTasks} />
+            ) : null}
+            {activeTask ? (
+              <TaskCard key={activeTask.id} task={activeTask} setActiveTask={setActiveTask} tasks={tasks} setTasks={setTasks} />
+            ) : null}
           </DragOverlay>,
           document.body
         )}

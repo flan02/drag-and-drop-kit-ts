@@ -9,6 +9,8 @@ export type Task = {
   id: Id
   columnId: Id
   content: string
+  date: string
+  updatedAt: boolean
 }
 
 export interface ColumnParams {

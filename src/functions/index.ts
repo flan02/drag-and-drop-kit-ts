@@ -21,12 +21,12 @@ export const createColumn = ({ columns, setColumns }: ColumnParams) => {
   return columns
 }
 
-export const handlerDelete = (columns: Column[], setColumns: (columns: Column[]) => void, id: number | string, setTasks: (tasks: Task[]) => void, tasks: Task[]) => {
+export const handlerColumnDelete = (columns: Column[], setColumns: (columns: Column[]) => void, id: number | string, setTasks: (tasks: Task[]) => void, tasks: Task[]) => {
   //console.log('delete button clicked', id);
   const filteredColumns = columns.filter((column) => column.id !== id)
   setColumns(filteredColumns)
   // ? Deleting all tasks from the column. Avoiding orphan tasks
-  const newTasks = tasks.filter((task: Task) => task.columnId === id)
+  const newTasks = tasks.filter((task: Task) => task.columnId !== id)
   setTasks(newTasks)
 }
 
@@ -34,12 +34,15 @@ export const handlerOnDragStart = (setActiveColumn: (activeColumn: Column) => vo
   //console.log(e)
   if (e.active.data.current?.type === 'Column') { // * Warning, maybe there is a bug here or error
     setActiveColumn(e.active.data.current.column)
-    return
+    return 0
   }
+
   if (e.active.data.current?.type === 'Task') { // * Warning, maybe there is a bug here or error
+    //console.log(e.active.id);
     setActiveTask(e.active.data.current.task)
-    return
+    return 0
   }
+  return 0
 }
 
 export const handlerOnDragEnd = (e: DragEndEvent, columns: Column[], setColumns: (columns: Column[]) => void, setActiveColumn: (activeColumn: Column | null) => void, setActiveTask: (activeTask: Task | null) => void) => {
@@ -119,7 +122,9 @@ export const createTask = (id: number | string, tasks: Task[], setTasks: (tasks:
   const newTask: Task = {
     id: generateId(),
     columnId: id,
-    content: `This is the new Task number ${tasksLength + 1} for id: ${id}`
+    content: `This is the new Task number ${tasksLength + 1} for id: ${id}`,
+    date: new Date().toLocaleString(),
+    updatedAt: false
   }
   //console.log(newTask)
   setTasks([...tasks, newTask])
@@ -141,13 +146,16 @@ export const toggleEditMode = (editMode: boolean, setEditMode: (editMode: boolea
 export const handlerUpdateTask = (tasks: Task[], id: number | string, eventValue: string, setTasks: (tasks: Task[]) => void) => {
   //console.log(taskId, eventValue);
   const newTasks = tasks.map((task) => {
-    if (task.id !== id) return task
 
+    if (task.id !== id) return task
     return {
       ...task,
-      content: eventValue
+      content: eventValue,
+      date: new Date().toLocaleString(),
+      updatedAt: true
     }
   })
+
 
   setTasks(newTasks)
 }
